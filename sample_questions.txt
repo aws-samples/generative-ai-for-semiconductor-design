@@ -1,0 +1,4 @@
+Can you give an example of the fill_pattern() command in icv?
+Write SKILL code for Computing a Bounding Box Centered at a Point.
+Write SKILL code for Computing the Intersection of Bounding Boxes.
+Write SKILL code for Computing the Union of Several Bounding Boxes.
