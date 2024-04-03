@@ -185,14 +185,14 @@ if eda_assistant_arg.args.webui:
         st.session_state.messages.append({"role": "assistant", "content": generated_text })
 
 ## -- Experimental Feature - Need to fine-tune (pun intended)
-    """
-    This capability is to allow RAG architectures using network file systems (NFS) as data sources.
-    Does not work for very large file directories and storing chunks in vector db takes a long time. 
-    This is just to demonstrate ability to source docs from file systems.
-    Only works in CLI mode.
-    TODO: test on FSX Netapp Ontap and FSX OpenZFS
-    TODO: improve performance on the FAISS vector store creation. Do not create it if its already there.
-    """
+    
+#   This capability is to allow RAG architectures using network file systems (NFS) as data sources.
+#   Does not work for very large file directories and storing chunks in vector db takes a long time. 
+#   This is just to demonstrate ability to source docs from file systems.
+#   Only works in CLI mode.
+#   TODO: test on FSX Netapp Ontap and FSX OpenZFS
+#   TODO: improve performance on the FAISS vector store creation. Do not create it if its already there.
+    
 
 elif eda_assistant_arg.args.docchain:
     print("\n-I- Document Chain mode selected...")
@@ -287,9 +287,10 @@ else:
     print("-I- Output Response...\n")
     print(response_body)
 
-    if len(ref_urls) > 0:
-        print("\n-I- Reference URLs: ")
-        for refurl in set(ref_urls):
-            print("-I-", refurl)
+    if not eda_assistant_arg.args.noref:
+        if len(ref_urls) > 0:
+            print("\n-I- Reference URLs: ")
+            for refurl in set(ref_urls):
+                print("-I-", refurl)
 
     print("\n-I- No. of output tokens: ", tokenclient.count_tokens(response_body)) 
