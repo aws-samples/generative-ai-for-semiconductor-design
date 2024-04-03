@@ -236,7 +236,19 @@ def get_langchain_faiss_vector_store(documents, embeddings):
 
 # Get response from Langchain RAG, return text output without metadata
 def get_langchain_retrievalqa(modelID, retriever, docs, prompt_template, query):
+    """Create a retrieval chain for QA.
+    
+    Args:
+        modelID : LLM model ID
+        retriever: A retriever object
+        prompt_template: A model specific prompt template
+        query: original user query
+        embeddings: A list of embeddings corresponding to the documents.
 
+    Returns:
+        Query Response 
+
+    """
     llm = BedrockChat(model_id=modelID, 
                       model_kwargs=get_langchain_model_kwargs(modelID),
                       client=bedrock_client)
