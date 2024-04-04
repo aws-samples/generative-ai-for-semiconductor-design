@@ -19,7 +19,7 @@ import eda_assistant_langchain_api
 # Add error handling for aws configuration (boto3 error)
 
 
-## -- Constants
+## -- Defaults
 num_retrieve_results = 5
 modelID= 'anthropic.claude-3-haiku-20240307-v1:0' if not eda_assistant_arg.args.modelid else eda_assistant_arg.args.modelid.strip()
 default_prompt = "Write a verilog code to swap contents of two registers with and without a temporary register"
@@ -184,17 +184,18 @@ if eda_assistant_arg.args.webui:
         # Add assistant response to chat history
         st.session_state.messages.append({"role": "assistant", "content": generated_text })
 
-## -- Experimental Feature - Need to fine-tune (pun intended)
-    
-#   This capability is to allow RAG architectures using network file systems (NFS) as data sources.
-#   Does not work for very large file directories and storing chunks in vector db takes a long time. 
-#   This is just to demonstrate ability to source docs from file systems.
-#   Only works in CLI mode.
-#   TODO: test on FSX Netapp Ontap and FSX OpenZFS
-#   TODO: improve performance on the FAISS vector store creation. Do not create it if its already there.
-    
 
+    
 elif eda_assistant_arg.args.docchain:
+    ## -- Experimental Feature - Need to fine-tune (pun intended)
+    # 
+    #   This capability is to allow RAG architectures using network file systems (NFS) as data sources.
+    #   Does not work for very large file directories and storing chunks in vector db takes a long time. 
+    #   This is just to demonstrate ability to source docs from file systems.
+    #   Only works in CLI mode.
+    #   TODO: test on FSX Netapp Ontap and FSX OpenZFS
+    #   TODO: improve performance on the FAISS vector store creation. Do not create it if its already there.
+    
     print("\n-I- Document Chain mode selected...")
     print("-I- ModelID selected: ", modelID)
     query = eda_assistant_arg.args.prompt if eda_assistant_arg.args.prompt else default_prompt

@@ -3,6 +3,7 @@ import eda_assistant_model_options
 import json
 import boto3
 import os
+import random
 # from utils import opensearch, secret
 
 ##Bedrock and Bedrock Embeddings
@@ -22,7 +23,6 @@ from langchain_community.embeddings import BedrockEmbeddings
 
 ## Vector Stores
 from langchain_community.vectorstores import FAISS
-from langchain.indexes import VectorstoreIndexCreator
 # from langchain_community.vectorstores import OpenSearchVectorSearch
 
 ## Chains
@@ -207,14 +207,12 @@ def create_rag_pipeline_with_sourcing(documents, prompt_template, llm) -> str:
 
 ## Setup a retrieval QA for documents
 def get_langchain_doc_retrievalqa(modelID, vectorstore, docs, prompt_template, query):
-
     llm = BedrockChat(model_id=modelID, 
                     model_kwargs=get_langchain_model_kwargs(modelID),
                     client=bedrock_client)
 
     rag_pipeline_with_sourcing = create_rag_pipeline_with_sourcing(docs, prompt_template, llm)
-    response = rag_pipeline_with_sourcing.invoke(query)
-    return response
+    return rag_pipeline_with_sourcing.invoke(query)
 
 
 ## Create a FAISS index, save index to a specified file path
@@ -228,7 +226,10 @@ def get_langchain_faiss_vector_store(documents, embeddings):
     Returns:
         A vector store object.
     """
-    index_file_path = os.path.join(os.getcwd(), "faiss_index")
+    # TODO: Can be scripted to load a FAISS db if already created, 
+    # however need to implement safer way to check
+
+    index_file_path = os.path.join(os.getcwd(), "faiss_index_" + str(random.randint(1000, 9999)))
     db = FAISS.from_documents(documents, embeddings)
     db.save_local(index_file_path)
     return db
@@ -268,7 +269,7 @@ def get_langchain_retrievalqa(modelID, retriever, docs, prompt_template, query):
 # Get model prompt template for langchain retrieval
 def get_langchain_model_prompt(context, question, temperature, max_tokens, topp, topk, modelID):
 
-    #Old prompt templating
+    #TODO: Move to messages API for claude in langchain
     if modelID in eda_assistant_model_options.anthropic_models:
         #Claude Prompt Template
         PROMPT_TEMPLATE = """

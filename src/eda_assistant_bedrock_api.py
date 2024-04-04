@@ -20,6 +20,14 @@ region = 'us-west-2'
 
 # Queries a knowledge base and retrieves information from it.
 def retrieve(query, kbId, numberOfResults=5):
+    """Retrieves relevant data from knowledge base
+    Args:
+    query: Original User Query
+    kbid: Knowledge Base ID
+
+    Returns:
+    Retrieve Response
+    """
     return bedrock_agent_client.retrieve(
         retrievalQuery= {
             'text': query
@@ -37,6 +45,15 @@ def retrieve(query, kbId, numberOfResults=5):
 # Queries a knowledge base and generates responses based on the retrieved results. 
 # The response cites up to five sources but only selects the ones that are relevant to the query.
 def retrieveAndGenerate(input, kbId, model_id):
+    """Retrieves relevant data from knowledge base and Generate summarized response using LLM
+    Args:
+    input: Original User Query
+    kbid: Knowledge Base ID
+    modelID: LLM specific Model identifier
+
+    Returns:
+    RAG Response
+    """
     model_arn = f'arn:aws:bedrock:us-west-2::foundation-model/{model_id}'
     return bedrock_agent_client.retrieve_and_generate(
         input={
@@ -83,6 +100,11 @@ def get_bedrock_response(query, modelID, temperature, topp, topk, maxtokens):
 
 # List All Foundational Models available in your AWS account
 def get_available_bedrock_models():
+    """
+    List all available bedrock models in your AWS account.
+    Returns:
+        A list of available bedrock models.
+    """
     endpoint_url = 'https://bedrock.us-west-2.amazonaws.com/'
     bedrock = boto3.client(service_name='bedrock',
                        region_name=region,
@@ -107,6 +129,16 @@ def get_system_prompt (modelID):
 
 #Procedures to generate appropriate prompt formats for specific models
 def get_model_prompt_payload(prompt_body, modelID, temperature, top_p, top_k, max_tokens):
+    """ Generate a dictionary of model kwargs for the language model.
+    Args:
+        modelID: LLM specific Model identifier
+        temperature: Temperature for the model
+        top_p: Top P for the model
+        top_k: Top K for the model
+        max_tokens: Max Tokens for the model
+    Returns:
+        A dictionary of model kwargs for the language model.
+    """
     if modelID in eda_assistant_model_options.anthropic_models:
         messages = [{"role": "user", 
                      "content": prompt_body}]
