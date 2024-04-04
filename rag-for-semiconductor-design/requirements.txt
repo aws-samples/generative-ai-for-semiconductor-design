@@ -1,6 +1,6 @@
 langchain==0.1.12
 langchain-community==0.0.28
-langchain-core==0.1.32
+langchain-core==0.1.35
 streamlit==1.32.2
 boto3==1.34.68
 anthropic-bedrock==0.8.0
