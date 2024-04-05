@@ -12,7 +12,11 @@ This demo has both Retrieval Augmented Generation (RAG) based architecture and a
 3. Anthropic Claude v3 Haiku
 4. Anthropic Claude v3 Sonnet
 
-Note: Incase the models are not accessible by default, navigate to the Amazon Bedrock console and click on Model Access on the left hand pane. To request access, click Manage Model Access, select the models supported and click Save Changes.  
+**Prerequisites:**
+1. AWS Account
+2. Foundational Model Access on AWS
+
+Incase the models are not accessible by default, navigate to the Amazon Bedrock console and click on Model Access on the left hand pane. To request access, click Manage Model Access, select the models supported and click Save Changes.  
 
 To learn more on Bedrock service endpoint and AWS regions supported, please visit:
 https://docs.aws.amazon.com/general/latest/gr/bedrock.html 
