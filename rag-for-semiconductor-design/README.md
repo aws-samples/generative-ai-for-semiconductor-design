@@ -69,10 +69,10 @@ Following is a screenshot when demo is run in GUI mode
 
 **Commandline Mode:**
 - Usage Example:
-- `python3 src/eda_assistant_chat.py --prompt "Can you explain how to run the Virtuoso UltraSim 64-bit software?" --kbid <Knowledge Base ID>`
+- `python3.11 src/eda_assistant_chat.py --prompt "<Prompt>" --kbid <Knowledge Base ID>`
 
 ```
-python3 src/eda_assistant_chat.py --prompt "Can you explain how to run the Virtuoso UltraSim 64-bit software?" --kbid #########           
+python3.11 src/eda_assistant_chat.py --prompt "Can you explain how to run the Virtuoso UltraSim 64-bit software?" --kbid #########           
 
 -I- CLI mode selected...
 
