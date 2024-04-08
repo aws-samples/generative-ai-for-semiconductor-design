@@ -15,6 +15,7 @@ This demo has both Retrieval Augmented Generation (RAG) based architecture and a
 **Prerequisites:**
 1. AWS Account
 2. Foundational Model Access on AWS
+3. AWS Access Credentials configured via AWS CLI
 
 Incase the models are not accessible by default, navigate to the Amazon Bedrock console and click on Model Access on the left hand pane. To request access, click Manage Model Access, select the models supported and click Save Changes.  
 
