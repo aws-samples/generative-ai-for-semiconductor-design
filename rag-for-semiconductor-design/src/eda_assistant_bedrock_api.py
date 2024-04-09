@@ -9,7 +9,7 @@ import boto3
 import json
 from botocore.client import Config
 import eda_assistant_model_options
-
+from anthropic_bedrock import AnthropicBedrock
 
 ## -- Bedrock Config
 bedrock_config = Config(connect_timeout=120, read_timeout=120, retries={'max_attempts': 0})
@@ -169,4 +169,7 @@ def get_model_prompt_payload(prompt_body, modelID, temperature, top_p, top_k, ma
                         }
     return user_prompt_obj
 
-
+#Get Native Token Client
+# For counting tokens. TODO: Make generic to model 
+def get_token_client():
+    return AnthropicBedrock()

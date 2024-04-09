@@ -16,5 +16,4 @@ parser.add_argument('--filepath', type=str, required=False, help='Use model as i
 parser.add_argument('--webui', action="store_true", required=False, help='Use langchain implementation')
 parser.add_argument('--show_all_models', required=False, action="store_true", help='display all models available to use')
 parser.add_argument('--noref', action="store_true", required=False, help='Do not show references')
-parser.add_argument('--endpoint_url', required=False, help='Provide region')
 args = parser.parse_args()

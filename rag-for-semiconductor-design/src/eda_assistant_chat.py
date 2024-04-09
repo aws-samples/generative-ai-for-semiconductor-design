@@ -2,13 +2,17 @@
 import sys
 import json
 import os
+import platform
 from weakref import ref
 import pandas as pd
-
 import streamlit as st
 
-from anthropic_bedrock import AnthropicBedrock
+# Check major and minor version
+if sys.version_info.major == 3 and sys.version_info.minor < 11:
+    print("-E- This script requires Python 3.11 or higher!")
+    sys.exit(1)
 
+#Import eda_assistant modules
 import eda_assistant_arg
 import eda_assistant_bedrock_api
 import eda_assistant_presigned_url
@@ -24,9 +28,9 @@ num_retrieve_results = 5
 modelID= 'anthropic.claude-3-haiku-20240307-v1:0' if not eda_assistant_arg.args.modelid else eda_assistant_arg.args.modelid.strip()
 default_prompt = "Write a verilog code to swap contents of two registers with and without a temporary register"
 src_code_dir = os.path.dirname(os.path.abspath(__file__))
-
-# For counting tokens. TODO: Make generic to model
-tokenclient = AnthropicBedrock()
+os_platform = platform.system()
+supported_os_platforms_tokenclient = ["Linux", "Darwin"]
+tokenclient = eda_assistant_bedrock_api.get_token_client()
 user_prompt = ""
 
 # Functions
@@ -254,8 +258,10 @@ else:
     ref_urls = []
 
     print("-I- User Prompt: ", query) 
-    prompt_tokens = tokenclient.count_tokens(query)
-    print("-I- No. of input prompt tokens:", prompt_tokens)
+
+    if os_platform in supported_os_platforms_tokenclient:
+        prompt_tokens = tokenclient.count_tokens(query)
+        print("-I- No. of input prompt tokens:", prompt_tokens)
     
     if eda_assistant_arg.args.norag:
         response_body = eda_assistant_bedrock_api.get_bedrock_response(query, modelID, eda_assistant_arg.args.temperature, eda_assistant_arg.args.top_p, eda_assistant_arg.args.top_k, eda_assistant_arg.args.tokens)
@@ -294,4 +300,5 @@ else:
             for refurl in set(ref_urls):
                 print("-I-", refurl)
 
-    print("\n-I- No. of output tokens: ", tokenclient.count_tokens(response_body)) 
+    if os_platform in supported_os_platforms_tokenclient:
+        print("\n-I- No. of output tokens: ", tokenclient.count_tokens(response_body)) 
