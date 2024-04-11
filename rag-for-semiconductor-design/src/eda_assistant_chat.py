@@ -159,11 +159,13 @@ if eda_assistant_arg.args.webui:
                     generated_text = retrieval_result['result']
                     citations = retrieval_result["source_documents"]
 
-                    for x in range(len(retrieval_result["source_documents"][0].metadata)):
-                        metadata_tag = retrieval_result["source_documents"][x].metadata
-                        s3_uri = metadata_tag["location"]["s3Location"]["uri"]
-                        temp_s3_url = eda_assistant_presigned_url.create_presigned_url(s3_uri)
-                        ref_urls.append(temp_s3_url) 
+
+                    if len(retrieval_result["source_documents"][0].metadata) > 0:
+                        for x in range(len(retrieval_result["source_documents"][0].metadata)):
+                            metadata_tag = retrieval_result["source_documents"][x].metadata
+                            s3_uri = metadata_tag["location"]["s3Location"]["uri"]
+                            temp_s3_url = eda_assistant_presigned_url.create_presigned_url(s3_uri)
+                            ref_urls.append(temp_s3_url) 
 
                 else:
                     print("-I- No RAG mode selected...")
@@ -284,17 +286,19 @@ else:
         response_body = retrieval_result['result']
         citations = retrieval_result["source_documents"]
 
-        for x in range(len(retrieval_result["source_documents"][0].metadata)):
-            metadata_tag = retrieval_result["source_documents"][x].metadata
-            s3_uri = metadata_tag["location"]["s3Location"]["uri"]
-            temp_s3_url = eda_assistant_presigned_url.create_presigned_url(s3_uri)
-            ref_urls.append(temp_s3_url)
-            
+        if len(retrieval_result["source_documents"][0].metadata) > 0:
+            for x in range(len(retrieval_result["source_documents"][0].metadata)):
+                metadata_tag = retrieval_result["source_documents"][x].metadata
+                s3_uri = metadata_tag["location"]["s3Location"]["uri"]
+                temp_s3_url = eda_assistant_presigned_url.create_presigned_url(s3_uri)
+                ref_urls.append(temp_s3_url)
+
 
     print("-I- Output Response...\n")
     print(response_body)
 
     if not eda_assistant_arg.args.noref:
+            
         if len(ref_urls) > 0:
             print("\n-I- Reference URLs: ")
             for refurl in set(ref_urls):
