@@ -1,22 +1,38 @@
-import sys
-
-# Check major and minor version
-if sys.version_info.major == 3 and sys.version_info.minor < 11:
-    print("This script requires Python 3.11 or higher!")
-    sys.exit(1)
-
 import boto3
 import json
-from botocore.client import Config
+import sys
 import eda_assistant_model_options
+from botocore.client import Config
 from anthropic_bedrock import AnthropicBedrock
+
 
 ## -- Bedrock Config
 bedrock_config = Config(connect_timeout=120, read_timeout=120, retries={'max_attempts': 0})
 bedrock_client = boto3.client('bedrock-runtime')
-bedrock_agent_client = boto3.client("bedrock-agent-runtime", config=bedrock_config)
-region = 'us-west-2'
+bedrock_agent_client = boto3.client('bedrock-agent')
+bedrock_agent_client_runtime = boto3.client("bedrock-agent-runtime", config=bedrock_config)
+configured_region = boto3.Session().region_name
+supported_regions = ['us-west-2', 'us-east-1']
+endpoint_url_dict = {'us-west-2' : 'https://bedrock.us-west-2.amazonaws.com/', 
+                     'us-east-1' : 'https://bedrock.us-east-1.amazonaws.com/' }
 
+# Check if the configured region is supported for the Bedrock service
+def check_bedrock_region():
+    try:
+        # Check if the configured region is available for the Bedrock service
+        if configured_region in supported_regions:
+            print(f"-I- The configured region ({configured_region}) is available for Amazon Bedrock.")
+        else:
+            print(f"-I- The configured region ({configured_region}) is not available for Amazon Bedrock. Please configure one of the available regions below: ")
+            for region in supported_regions:
+                print(f"-I- {region}")
+            sys.exit(1)
+
+    except bedrock_client.exceptions.ClientError as e:
+        print(f"-E- Error: {e}")
+        print("-E- Please check your AWS credentials and ensure you have the necessary permissions.")
+        sys.exit(1)
+    
 
 # Queries a knowledge base and retrieves information from it.
 def retrieve(query, kbId, numberOfResults=5):
@@ -28,7 +44,7 @@ def retrieve(query, kbId, numberOfResults=5):
     Returns:
     Retrieve Response
     """
-    return bedrock_agent_client.retrieve(
+    return bedrock_agent_client_runtime.retrieve(
         retrievalQuery= {
             'text': query
         },
@@ -54,8 +70,8 @@ def retrieveAndGenerate(input, kbId, model_id):
     Returns:
     RAG Response
     """
-    model_arn = f'arn:aws:bedrock:us-west-2::foundation-model/{model_id}'
-    return bedrock_agent_client.retrieve_and_generate(
+    model_arn = f'arn:aws:bedrock:{configured_region}::foundation-model/{model_id}'
+    return bedrock_agent_client_runtime.retrieve_and_generate(
         input={
             'text': input
         },
@@ -105,10 +121,9 @@ def get_available_bedrock_models():
     Returns:
         A list of available bedrock models.
     """
-    endpoint_url = 'https://bedrock.us-west-2.amazonaws.com/'
     bedrock = boto3.client(service_name='bedrock',
-                       region_name=region,
-                       endpoint_url=endpoint_url)
+                       region_name=configured_region,
+                       endpoint_url=endpoint_url_dict[configured_region])
     return bedrock.list_foundation_models()
 
 

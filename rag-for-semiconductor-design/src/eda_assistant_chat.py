@@ -11,6 +11,7 @@ import streamlit as st
 if sys.version_info.major == 3 and sys.version_info.minor < 11:
     print("-E- This script requires Python 3.11 or higher!")
     sys.exit(1)
+    
 
 #Import eda_assistant modules
 import eda_assistant_arg
@@ -18,8 +19,8 @@ import eda_assistant_bedrock_api
 import eda_assistant_presigned_url
 import eda_assistant_langchain_api
 
+
 #TODO:
-# Add error handing for python version (need 3.11 and up)
 # Add error handling for aws configuration (boto3 error)
 
 
@@ -33,14 +34,9 @@ supported_os_platforms_tokenclient = ["Linux", "Darwin"]
 tokenclient = eda_assistant_bedrock_api.get_token_client()
 user_prompt = ""
 
-# Functions
-def clear_input():
-    if "question" in st.session_state:
-        del st.session_state["question"]
-    if "messages" in st.session_state:
-        del st.session_state["messages"]
-    if "selected_question" in st.session_state:
-        st.session_state.selected_question = ""
+#Check if Bedrock Region is supported
+check_region = eda_assistant_bedrock_api.check_bedrock_region()
+
 
 ## -- Streamlit code - GUI Mode
 if eda_assistant_arg.args.webui: 
@@ -50,7 +46,6 @@ if eda_assistant_arg.args.webui:
     ref_urls = []
     
     # Sidebar User Settings
-    reset = st.sidebar.button("Reset Chat", on_click=clear_input)
     model_temp = st.sidebar.slider(
         label='Model Temperature',
         min_value=0.0,
@@ -142,7 +137,6 @@ if eda_assistant_arg.args.webui:
             with st.spinner("Thinking..."):
 
                 print("-I- GUI Prompt: ", user_prompt)
-
                 if "RAG" in selected_option_rag:
 
                     print("-I- Model Temperature provided: ", model_temp)
@@ -160,7 +154,7 @@ if eda_assistant_arg.args.webui:
                     citations = retrieval_result["source_documents"]
 
 
-                    if len(retrieval_result["source_documents"][0].metadata) > 0:
+                    if len(retrieval_result["source_documents"]) > 0 and len(retrieval_result["source_documents"][0].metadata) > 0:
                         for x in range(len(retrieval_result["source_documents"][0].metadata)):
                             metadata_tag = retrieval_result["source_documents"][x].metadata
                             s3_uri = metadata_tag["location"]["s3Location"]["uri"]
@@ -184,8 +178,6 @@ if eda_assistant_arg.args.webui:
                         for url in unique_list:
                             markdown_string += f"- {url}\n"
                         citation_placeholder.markdown(markdown_string)
-                        
-                
 
         # Add assistant response to chat history
         st.session_state.messages.append({"role": "assistant", "content": generated_text })
@@ -286,7 +278,7 @@ else:
         response_body = retrieval_result['result']
         citations = retrieval_result["source_documents"]
 
-        if len(retrieval_result["source_documents"][0].metadata) > 0:
+        if len(retrieval_result["source_documents"]) > 0 and len(retrieval_result["source_documents"][0].metadata) > 0:
             for x in range(len(retrieval_result["source_documents"][0].metadata)):
                 metadata_tag = retrieval_result["source_documents"][x].metadata
                 s3_uri = metadata_tag["location"]["s3Location"]["uri"]
