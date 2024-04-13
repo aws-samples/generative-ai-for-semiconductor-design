@@ -19,7 +19,7 @@ This demo has both Retrieval Augmented Generation (RAG) based architecture and a
 
 Incase the models are not accessible by default, navigate to the Amazon Bedrock console and click on Model Access on the left hand pane. To request access, click Manage Model Access, select the models supported and click Save Changes.  
 
-To learn more on Bedrock service endpoint and AWS regions supported, please visit:
+Currently demo is supported for `us-west-2` region with more region support coming soon. To learn more on Bedrock service endpoint and AWS regions supported, please visit:
 https://docs.aws.amazon.com/general/latest/gr/bedrock.html 
 
 This demo requires creating a knowledge base. A guide to create a knowledge base to setup your own Engineering Assistant is under KnowledgeBasesForBedrock.md.
