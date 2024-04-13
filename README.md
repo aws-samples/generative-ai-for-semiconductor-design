@@ -5,10 +5,9 @@ Generative design methodologies powered by AI can automatically design chips and
 For more on context on generative AI for semiconductor design, read our blog: https://aws.amazon.com/blogs/industries/generative-ai-for-semiconductor-design/ 
 
 ## Semiconductor design use cases for a typical EDA flow:
-![Generative AI for Semiconductor Design](assets/semiconductor_usecases.png)
+![Generative AI for Semiconductor Design](assets/semicon-genai-usecases.png)
 
 To get started with implementing a RAG based pipeline on Amazon Bedrock and Knowledge Bases, please review `rag-for-semiconductor-design`. 
-
 
 To learn more on Bedrock service endpoint and AWS regions supported, please visit:
 https://docs.aws.amazon.com/general/latest/gr/bedrock.html 
